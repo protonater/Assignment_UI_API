@@ -13,6 +13,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -91,8 +92,7 @@ public class Condos {
 
     // Step 4: Print all the price values in sorted order (descending order) on the console from the first page
     private void sortAndPrint(List<String> priceList) {
-        priceList.sort((a, b) -> Integer.parseInt(b.replace("$", "").replaceAll(",", ""))
-                - Integer.parseInt(a.replace("$", "").replaceAll(",", "")));
+        priceList.sort(Comparator.comparingInt(a -> Integer.parseInt(a.replace("$", "").replaceAll(",", ""))));
         priceList.forEach(System.out::println);
     }
 

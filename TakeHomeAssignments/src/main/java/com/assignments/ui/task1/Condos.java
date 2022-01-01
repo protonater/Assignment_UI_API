@@ -123,7 +123,7 @@ public class Condos {
             jsonObject.put("features", element.selectXpath("//tr/td[3]/div").text());
             jsonArray.put(jsonObject);
         });
-        PrintWriter printWriter = new PrintWriter(this.driver.getTitle().split("[|]")[0]+".json");
+        PrintWriter printWriter = new PrintWriter(this.driver.getTitle().split("[|]")[0].trim()+".json");
 
         printWriter.write(jsonArray.toString());
         printWriter.close();

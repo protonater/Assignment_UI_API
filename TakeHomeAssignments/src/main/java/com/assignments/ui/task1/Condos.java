@@ -3,8 +3,6 @@ package com.assignments.ui.task1;
 import com.assignments.ui.MyProperties;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONString;
-import org.json.JSONWriter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

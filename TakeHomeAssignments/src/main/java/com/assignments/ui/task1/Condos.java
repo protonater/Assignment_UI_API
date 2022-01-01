@@ -44,14 +44,14 @@ public class Condos {
     public void gotoURL() throws InterruptedException {
         System.setProperty("webdriver.chrome.driver", "chromedriver");
         this.driver = new ChromeDriver();
-        this.driver.get(this.myProperties.getProperty("condos.url"));
+        this.driver.get(this.myProperties.getProperty(CONDOS_URL));
         TimeUnit.SECONDS.sleep(6L);
     }
 
     private void inputLocation() throws InterruptedException {
         this.driver.findElement(By.id("search-input")).click();
         TimeUnit.SECONDS.sleep(1L);
-        this.driver.findElement(By.className("react-autosuggest__input")).sendKeys(new CharSequence[]{"toronto"});
+        this.driver.findElement(By.className("react-autosuggest__input")).sendKeys("toronto");
         TimeUnit.SECONDS.sleep(1L);
 
         try {
@@ -59,7 +59,7 @@ public class Condos {
                 Document doc = Jsoup.parse(this.driver.findElement(By.id("react-autowhatever-1-section-0-item-" + i)).getAttribute("innerHTML"));
                 if (doc.getElementsByAttributeValueContaining("class", "ResultItem").text().equalsIgnoreCase("Toronto")) {
                     this.driver.findElement(By.id("react-autowhatever-1-section-0-item-" + i)).click();
-                    TimeUnit.SECONDS.sleep(4L);
+                    TimeUnit.SECONDS.sleep(10L);
                     break;
                 }
             }
@@ -87,16 +87,16 @@ public class Condos {
     private void sortAndPrint(List<String> priceList) {
         priceList.sort((a, b) -> Integer.parseInt(b.replace("$", "").replaceAll(",", ""))
                 - Integer.parseInt(a.replace("$", "").replaceAll(",", "")));
-        PrintStream var10001 = System.out;
-        Objects.requireNonNull(var10001);
-        priceList.forEach(var10001::println);
+        priceList.forEach(System.out::println);
     }
 
     private void select5thProperty() {
         this.elementList.clear();
         this.elementList = Jsoup.parse(this.driver.findElement(By.id("listRow")).getAttribute("innerHTML")).getElementsByAttributeValueContaining("class", "ListingPreview");
         String tag = ((Element)((Element)this.elementList.get(5)).getElementsByTag("a").get(0)).attr("href");
-        List<WebElement> elements = this.driver.findElement(By.id("listRow")).findElements(By.xpath("//div"));
+        List<WebElement> elements = this.driver.findElement(By.id("listRow")).findElements(By.xpath("//div[1]"));
+        elements.forEach(e -> System.out.println(e.getAttribute("innerHTML")));
+
         System.out.println("Halt");
     }
 

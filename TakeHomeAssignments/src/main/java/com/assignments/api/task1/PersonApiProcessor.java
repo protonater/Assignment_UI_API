@@ -61,7 +61,7 @@ public class PersonApiProcessor {
 
     // Step 3: Print the details of each person in console in ascending order by age
     private void printDetails(List<JSONObject> details) {
-        details.sort(Comparator.comparingInt(obj -> Integer.parseInt(obj.getString("age"))));
+        details.sort(Comparator.comparingInt(obj -> obj.getString("age").equalsIgnoreCase("null") ? 0 : Integer.parseInt(obj.getString("age"))));
         details.forEach(System.out::println);
     }
 }

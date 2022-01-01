@@ -115,6 +115,7 @@ public class Condos {
         Document doc = Jsoup.parse(this.driver.findElement(By.xpath("//article")).getAttribute("innerHTML"));
         this.driver.findElement(By.className(doc.getElementsByAttributeValueContaining("class", "ShowMore").attr("class").split(" ")[0])).click();
         TimeUnit.SECONDS.sleep(2L);
+        doc = Jsoup.parse(this.driver.findElement(By.xpath("//article")).getAttribute("innerHTML"));
         doc.selectXpath("//*/table/tbody/tr").forEach(element -> {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", element.selectXpath("//tr/td[1]/div").text());

@@ -51,8 +51,6 @@ public class SteamPowered {
             JSONObject gameDetails = new JSONObject();
             WebElement anchorTag = this.webDriver.findElement(By.xpath("//div[@id=\"topsellers_tier\"]/a[" + i + "]"));
             try {
-                Element discountPrices = Jsoup.parse(anchorTag.findElement(By.xpath("//div[@id=\"topsellers_tier\"]/a[" + i + "]/*/div[@class=\"discount_prices\"]")).getAttribute("innerHTML"));
-
                 // Get title
                 actions.moveToElement(anchorTag).build().perform();
                 TimeUnit.SECONDS.sleep(1L);
@@ -62,6 +60,7 @@ public class SteamPowered {
                 gameDetails.put("release_date", this.webDriver.findElement(By.xpath("//div[@id=\"hover_app_" + jsonObject.get("id") + "\"]/div[@class=\"hover_release\"]/span")).getText());
 
                 // Step 3: From that section, categorize the games into three types - Free to play, on regular price, on sale
+                Element discountPrices = Jsoup.parse(anchorTag.findElement(By.xpath("//div[@id=\"topsellers_tier\"]/a[" + i + "]/*/div[@class=\"discount_prices\"]")).getAttribute("innerHTML"));
                 if (discountPrices.getElementsByAttributeValueContaining("class", "discount_original_price").hasText()) {
                     gameDetails.put("category", "on sale");
                 } else if (discountPrices.selectXpath("//div[@class=\"discount_final_price\"]").text().equalsIgnoreCase("Free to Play")) {
@@ -70,9 +69,11 @@ public class SteamPowered {
                     gameDetails.put("category", "on regular price");
                 }
                 gameDetails.put("price",discountPrices.selectXpath("//div[@class=\"discount_final_price\"]").text());
-                gameDetailList.add(gameDetails);
             } catch (Exception e) {
-                continue;
+                gameDetails.put("category", "block or empty");
+                gameDetails.put("price", "null");
+            } finally {
+                gameDetailList.add(gameDetails);
             }
         }
         return gameDetailList;
@@ -86,7 +87,6 @@ public class SteamPowered {
 
         // Pending to write the data into csv;
     }
-
 
     // close and quit
     private void quitDriver() {

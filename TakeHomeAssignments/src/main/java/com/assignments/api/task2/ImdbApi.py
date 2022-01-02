@@ -15,6 +15,8 @@ for movie in bottom:
     movieDict['movie_name'] = movie.data['title']
     movieDict['director'] = movieInfo.data['director'][0].data['name']
     movieList.append(movieDict)
+    if len(movieList) > 5:
+        break
 
 # Step 5: Pretty-print the data in json and store in a json file
 movieListJson = json.dumps(sorted(movieList, key=lambda item: item['director']), indent=2);

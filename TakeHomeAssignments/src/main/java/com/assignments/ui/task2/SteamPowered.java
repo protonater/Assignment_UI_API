@@ -83,6 +83,8 @@ public class SteamPowered {
     private void printDetails(List<JSONObject> gameDetailList) {
         gameDetailList.sort(((o1, o2) -> o1.getString("name").compareToIgnoreCase(o2.getString("name"))));
         gameDetailList.forEach(System.out::println);
+
+        // Pending to write the data into csv;
     }
 
 

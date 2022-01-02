@@ -13,7 +13,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -22,9 +21,6 @@ public class Condos {
     private static final String CONDOS_URL = "condos.url";
     private WebDriver driver;
     private List<Element> elementList;
-
-    public Condos() {
-    }
 
     public static void main(String[] args) {
         Condos condos = new Condos();
@@ -111,11 +107,13 @@ public class Condos {
         ArrayList<String> newTb = new ArrayList<>(this.driver.getWindowHandles());
         this.driver.switchTo().window(newTb.get(1));
 
-        // Get the HTML parser
+        // Click on Show More button to display all rooms info
         elementList.clear();
         Document doc = Jsoup.parse(this.driver.findElement(By.xpath("//article")).getAttribute("innerHTML"));
         this.driver.findElement(By.className(doc.getElementsByAttributeValueContaining("class", "ShowMore").attr("class").split(" ")[0])).click();
         TimeUnit.SECONDS.sleep(2L);
+
+        // Create Json object for name, size and features
         doc = Jsoup.parse(this.driver.findElement(By.xpath("//article")).getAttribute("innerHTML"));
         doc.selectXpath("//*/table/tbody/tr").forEach(element -> {
             JSONObject jsonObject = new JSONObject();
@@ -124,8 +122,9 @@ public class Condos {
             jsonObject.put("features", element.selectXpath("//tr/td[3]/div").text());
             jsonArray.put(jsonObject);
         });
-        PrintWriter printWriter = new PrintWriter(this.driver.getTitle().split("[|]")[0].trim() + ".json");
 
+        // store the json data on to a file and the fileName is the address
+        PrintWriter printWriter = new PrintWriter(this.driver.getTitle().split("[|]")[0].trim() + ".json");
         printWriter.write(jsonArray.toString());
         printWriter.close();
     }

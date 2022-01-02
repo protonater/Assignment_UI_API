@@ -1,6 +1,5 @@
 package com.assignments.ui.task2;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -10,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +20,8 @@ public class SteamPowered {
         SteamPowered steamPowered = new SteamPowered();
         try {
             steamPowered.gotoURL();
-            steamPowered.getTopSellerGames();
+            List<JSONObject> gameDetailList = steamPowered.getTopSellerGames();
+            steamPowered.printDetails(gameDetailList);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -37,9 +38,9 @@ public class SteamPowered {
     }
 
     // Step 2: Print the game names from the Top Seller section in console.
-    private JSONArray getTopSellerGames() throws InterruptedException {
+    private List<JSONObject> getTopSellerGames() throws InterruptedException {
         Actions actions = new Actions(this.webDriver);
-        JSONArray gameDetailList = new JSONArray();
+        List<JSONObject> gameDetailList = new ArrayList<>();
 
         // Go to top sellers container
         WebElement topSellerContainer = this.webDriver.findElement(By.id("topsellers_tier"));
@@ -57,7 +58,8 @@ public class SteamPowered {
                 TimeUnit.SECONDS.sleep(1L);
                 String appId = anchorTag.getAttribute("onmouseover");
                 JSONObject jsonObject = new JSONObject(appId.substring(appId.indexOf("{"), appId.indexOf("}") + 1));
-                gameDetails.put("title", this.webDriver.findElement(By.xpath("//div[@id=\"hover_app_" + jsonObject.get("id") + "\"]/h4")).getText());
+                gameDetails.put("name", this.webDriver.findElement(By.xpath("//div[@id=\"hover_app_" + jsonObject.get("id") + "\"]/h4")).getText());
+                gameDetails.put("release_date", this.webDriver.findElement(By.xpath("//div[@id=\"hover_app_" + jsonObject.get("id") + "\"]/div[@class=\"hover_release\"]/span")).getText());
 
                 // Step 3: From that section, categorize the games into three types - Free to play, on regular price, on sale
                 if (discountPrices.getElementsByAttributeValueContaining("class", "discount_original_price").hasText()) {
@@ -67,7 +69,8 @@ public class SteamPowered {
                 } else {
                     gameDetails.put("category", "on regular price");
                 }
-                gameDetailList.put(gameDetails);
+                gameDetails.put("price",discountPrices.selectXpath("//div[@class=\"discount_final_price\"]").text());
+                gameDetailList.add(gameDetails);
             } catch (Exception e) {
                 continue;
             }
@@ -75,7 +78,12 @@ public class SteamPowered {
         return gameDetailList;
     }
 
-
+    // Step 4: Print the name of the games in ascending order in a csv file with four attributes
+    // (name, release date, price and the above category)
+    private void printDetails(List<JSONObject> gameDetailList) {
+        gameDetailList.sort(((o1, o2) -> o1.getString("name").compareToIgnoreCase(o2.getString("name"))));
+        gameDetailList.forEach(System.out::println);
+    }
 
 
     // close and quit

@@ -92,7 +92,8 @@ public class Condos {
 
     // Step 4: Print all the price values in sorted order (descending order) on the console from the first page
     private void sortAndPrint(List<String> priceList) {
-        priceList.sort(Comparator.comparingInt(a -> Integer.parseInt(a.replace("$", "").replaceAll(",", ""))));
+        priceList.sort((a, b) -> Integer.parseInt(b.replace("$", "").replaceAll(",", ""))
+                - Integer.parseInt(a.replace("$", "").replaceAll(",", "")));
         priceList.forEach(System.out::println);
     }
 
@@ -123,7 +124,7 @@ public class Condos {
             jsonObject.put("features", element.selectXpath("//tr/td[3]/div").text());
             jsonArray.put(jsonObject);
         });
-        PrintWriter printWriter = new PrintWriter(this.driver.getTitle().split("[|]")[0].trim()+".json");
+        PrintWriter printWriter = new PrintWriter(this.driver.getTitle().split("[|]")[0].trim() + ".json");
 
         printWriter.write(jsonArray.toString());
         printWriter.close();

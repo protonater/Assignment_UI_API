@@ -93,7 +93,7 @@ public class SteamPowered {
         printWriter.write("name, release_date, price, category\n");
         gameDetailList.forEach(o1 -> {
             StringBuilder str = new StringBuilder();
-            str.append(o1.getString("name")).append(",\"")
+            str.append("\"").append(o1.getString("name")).append("\",\"")
                     .append(o1.getString("release_date").split(":")[1].trim()).append("\",\"")
                     .append(o1.getString("price")).append("\",\"")
                     .append(o1.getString("category")).append(("\"\n"));
